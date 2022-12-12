@@ -4,16 +4,17 @@ import {createRoot} from "react-dom";
 import Error from "./Error/Error";
 import Header from "./Header/Header";
 import NaviBar from "./NaviBar/NaviBar";
+import {Login} from "./Login/Login";
 
 const router = createBrowserRouter([
-    // { path: "/", element: <Login /> },
+    { path: "/", element: <Login /> },
     // { path: "main", element: <Main /> },
     { path: "*", element: <Error />}
 ]);
 createRoot(document.querySelector('#root')).render(
     <div className="content-frame">
         <NaviBar/>
-        <Header />
+        {/*<Header />*/}
         {/*<Description />*/}
         <RouterProvider router={router}/>
     </div>
