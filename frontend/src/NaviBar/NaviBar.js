@@ -14,9 +14,9 @@ export default function NaviBar() {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-between">
                         <Nav className="mr-auto">
-                            <Nav.Link>Home</Nav.Link>
+                            <Nav.Link href="/">Home</Nav.Link>
                             <Nav.Link>Table</Nav.Link>
-                            <Nav.Link>About</Nav.Link>
+                            <Nav.Link href="/about">About</Nav.Link>
                             <Nav.Link>Exercise</Nav.Link>
                         </Nav>
                         <Nav>
