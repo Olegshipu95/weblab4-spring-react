@@ -6,18 +6,19 @@ import About from "./About/About";
 import NaviBar from "./NaviBar/NaviBar";
 import {Login} from "./Login/Login";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {Main} from "./Main/Main";
+import {Exercise} from "./Exercise/Exercise";
 
 const router = createBrowserRouter([
     { path: "/", element: <Login /> },
     { path: "/about", element: <About />},
-    // { path: "main", element: <Main /> },
+    { path: "/main", element: <Main /> },
+    { path: "/exercise", element: <Exercise/>},
     { path: "*", element: <Error />}
 ]);
 createRoot(document.querySelector('#root')).render(
     <div className="content-frame">
         <NaviBar/>
-
-        {/*<Exercise />*/}
         <RouterProvider router={router}/>
     </div>
 );
