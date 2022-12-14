@@ -5,13 +5,11 @@ import itmo.web.weblab4.dto.EntranceDto
 import itmo.web.weblab4.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/login")
 class LoginController {
     @Autowired
@@ -21,8 +19,8 @@ class LoginController {
     @PostMapping
     fun loginByUser(@RequestBody user: EntranceDto):ResponseEntity<Any>{
         val username = user.username
-        val existsUser = userRepository.existsByUserName(username)
-        return if(existsUser){
+        val existsUser = userRepository.findByUserName(username)
+        return if(existsUser==null){
             ResponseEntity.badRequest().body(
                 AuthRespDto("error","it's not your day, hacker")
             )

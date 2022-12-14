@@ -1,6 +1,6 @@
 import React from 'react';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import {createRoot} from "react-dom";
+import {createRoot} from "react-dom/client";
 import Error from "./Error/Error";
 import About from "./About/About";
 import NaviBar from "./NaviBar/NaviBar";
