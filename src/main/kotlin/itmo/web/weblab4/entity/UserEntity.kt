@@ -14,6 +14,6 @@ open class UserEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     open var id: Long? = null
 
-    open var login: String? = null
-    open var hashPass: String? = null
+    open var userName: String? = null
+    open var password: String? = null
 }
