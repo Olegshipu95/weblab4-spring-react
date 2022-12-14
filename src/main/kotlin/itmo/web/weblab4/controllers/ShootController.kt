@@ -1,4 +1,10 @@
-package itmo.web.lab4.controllers
+package itmo.web.weblab4.controllers
 
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+
+@RestController
+@RequestMapping("/shoot")
 class ShootController {
 }
