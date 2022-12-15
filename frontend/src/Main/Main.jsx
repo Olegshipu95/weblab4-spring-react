@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {Col, Form, Row, Table} from "react-bootstrap";
+import {Button, Col, Container, Form, Row, Table} from "react-bootstrap";
 import {getHitsFromServer} from "./io";
 import MyTable from "./MyTable";
-import Canvas from "../Canvas/Canvas";
+import {useNavigate} from "react-router-dom";
+const superagent = require('superagent');
 
-// import {Canvas} from "../Canvas/Canvas";
 export function Main() {
     const login = localStorage.getItem("login")
     const token = localStorage.getItem("token")
@@ -12,24 +12,33 @@ export function Main() {
     const [currX, setX] = useState()
     const [currY, setY] = useState()
     const [currR, setR] = useState()
-    // useEffect(() => {
-    //     if (localStorage.getItem("accessToken") !== null || localStorage.getItem("refreshToken") !== null) {
-    //         props.getData()
-    //     }else {
-    //         navigate("/login")
-    //     }
-    // }, [])
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (localStorage.getItem("token") == null) {
+            navigate("/")
+        }
+    })
 
+    function sendPoint(){
+
+        superagent().post('http://localhost:8080/hits/shoot',{ x: currX, y: currY, r: currR})
+            .then(resp => {
+                setHits(resp.hits)
+            })
+            .catch(error => {
+                alert(error)
+            })
+    }
 
     function getHits() {
         getHitsFromServer(login, token, (result) => {
             setHits(result.hits)
         })
     }
+
     useEffect(() => {
         getHits()
     }, [])
-
 
 
     return (
@@ -73,15 +82,15 @@ export function Main() {
                         </Form.Group>
                     </Col>
                     <Col className="offset-md-1">
-                        <Canvas
-                            points={hitArray}
-                            currRadio={currR}
-                            // submitter={sendCertainRequest}
-                        />
+                        <img src="/resources/img/my-var.png" height="250px" width="250px"/>
                     </Col>
                 </Row>
             </Form>
-            <MyTable hits={hitArray} />
+            <Container className="text-center w-100">
+                {/*<Button variant="primary" className="me-2 mt-2" onClick={sign_in}></Button>*/}
+                {/*<Button variant="primary" className="mt-2" onClick={}></Button>*/}
+            </Container>
+            <MyTable hits={hitArray}/>
         </div>
     )
 }

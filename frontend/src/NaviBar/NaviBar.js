@@ -46,8 +46,9 @@ export default function NaviBar() {
                             <Nav.Link href="/about">About</Nav.Link>
                             <Nav.Link href="/exercise">Exercise</Nav.Link>
                         </Nav>
+                        <Nav>{login!==undefined&&login!=null?login:""}</Nav>
                         <Nav>
-                            {login===undefined||login==null? <Button variant="primary" className="me-2" onClick={handleShow}>Log In</Button> :
+                            {login===undefined&&login==null? <Button variant="primary" className="me-2" onClick={handleShow}>Log In</Button> :
                             <Button variant="primary" onClick={deleteAuth}>Sign out</Button>}
                         </Nav>
                     </Navbar.Collapse>

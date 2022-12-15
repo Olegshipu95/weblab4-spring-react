@@ -4,6 +4,7 @@ import itmo.web.weblab4.dto.AuthRespDto
 import itmo.web.weblab4.dto.EntranceDto
 import itmo.web.weblab4.repository.UserRepository
 import itmo.web.weblab4.service.HashService
+//import itmo.web.weblab4.service.JwtService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,6 +18,9 @@ class LoginController {
     private lateinit var userRepository: UserRepository
     @Autowired
     private lateinit var hashService:HashService
+//    @Autowired
+//    private lateinit var tokenService: JwtService
+
 
     @PostMapping
     fun loginByUser(@RequestBody user: EntranceDto):ResponseEntity<Any>{
@@ -27,6 +31,7 @@ class LoginController {
                 AuthRespDto("error","it's not your day, hacker")
             )
         }else{
+//            val usersToken = tokenService.generateForUser(username)
             ResponseEntity.ok().body(
                 AuthRespDto("nice")
             )

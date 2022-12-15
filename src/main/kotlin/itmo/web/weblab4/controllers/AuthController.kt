@@ -31,7 +31,8 @@ class AuthController {
             ResponseEntity.badRequest().body(
                 AuthRespDto("error", "$username уже используется")
             )
-        }else{
+        }
+        else{
             println("$username start saving his login to db")
             val userEntity = UserEntity().also {
                 it.userName = username

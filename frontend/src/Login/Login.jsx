@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Container, Form, Button} from "react-bootstrap";
 import './login.css';
-import axios from "axios";
-import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {sendLoginInfo, sendRegisterInfo, sendToServer, validateEmail, validatePass} from "./login";
 
@@ -14,7 +12,7 @@ export function Login() {
     })
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState('');
 
     const sign_in = async (e) => {
         e.preventDefault()
@@ -27,7 +25,7 @@ export function Login() {
             return
         }
         sendLoginInfo(username, password, setMessage, (result) => {
-            localStorage.setItem("token", result.token)
+            // localStorage.setItem("token", result.token)
             localStorage.setItem("login", username)
             navigate("/main")
         })
@@ -43,8 +41,10 @@ export function Login() {
             alert("Ваш пароль должен быть больше 4")
             return
         }
-        sendRegisterInfo(username, password, setMessage, "PUT", "http://localhost:8080/authentication", () => {
-            setMessage("Регистрация успешна")
+        sendRegisterInfo(username, password, setMessage, (result) => {
+            // localStorage.setItem("token", result.token)
+            localStorage.setItem("login", username)
+            navigate("/main")
         })
     }
 
