@@ -4,6 +4,7 @@ import {Link, Navigate, useNavigate} from "react-router-dom";
 import {sendLoginInfo, validateEmail, validatePass} from "../Login/login";
 import "../Login/login"
 export default function NaviBar() {
+    const login = localStorage.getItem("login")
     const [show, setShow] = useState(false)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -27,7 +28,11 @@ export default function NaviBar() {
             window.location.href = "/main"
         })
     }
-
+    const deleteAuth = async () => {
+        localStorage.removeItem("token")
+        localStorage.removeItem("login")
+        window.location.href = "/"
+    }
     return (
         <>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" className="p-2">
@@ -42,8 +47,8 @@ export default function NaviBar() {
                             <Nav.Link href="/exercise">Exercise</Nav.Link>
                         </Nav>
                         <Nav>
-                            <Button variant="primary" className="me-2" onClick={handleShow}>Log In</Button>
-                            <Button variant="primary">Sign out</Button>
+                            {login===undefined||login==null? <Button variant="primary" className="me-2" onClick={handleShow}>Log In</Button> :
+                            <Button variant="primary" onClick={deleteAuth}>Sign out</Button>}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

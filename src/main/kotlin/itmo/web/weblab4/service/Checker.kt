@@ -18,18 +18,18 @@ class Checker {
     }
 
     fun checkHit(hit: HitDto): Boolean {
-        val x = hit.cordX
-        val y = hit.cordY
-        val r = hit.cordR
+        val x = hit.cordX!!
+        val y = hit.cordY!!
+        val r = hit.cordR!!
         return if (x >= 0) {
             if (y <= 0) {
-                checkCircle(x, y, r)
+                checkTriangle(x, y, r)
             } else {
                 checkRectangle(x, r)
             }
         } else {
             if (y <= 0) {
-                checkTriangle(x, y, r)
+                checkCircle(x, y, r)
             } else {
                 false
             }

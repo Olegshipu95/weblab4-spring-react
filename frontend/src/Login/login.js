@@ -9,8 +9,7 @@ export function sendRegisterInfo(username, password, setErrorMessage, onSuccess)
         return true
     })
         .catch((error) => {
-            console.log(error)
-            alert("Проблемка с серваком")
+            alert(error)
         })
     return false
 }
