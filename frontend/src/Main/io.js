@@ -17,3 +17,13 @@ export function getHitsFromServer(login,token, onSuccess){
         })
     return false
 }
+
+export function validateX(x){
+    return !(x === undefined || x == null);
+}
+export function validateY(y){
+    return !(y === undefined || y==null);
+}
+export function validateR(r){
+    return !(r === undefined||r==null)
+}

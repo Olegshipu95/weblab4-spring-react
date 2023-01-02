@@ -33,7 +33,7 @@ class LoginController {
         }else{
 //            val usersToken = tokenService.generateForUser(username)
             ResponseEntity.ok().body(
-                AuthRespDto("nice")
+                AuthRespDto ("nice")
             )
         }
     }

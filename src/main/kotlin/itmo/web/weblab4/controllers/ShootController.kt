@@ -28,6 +28,7 @@ class ShootController {
     fun hitsFromUser(@RequestBody hitRec: HitDto): ResponseEntity<Any> {
         val start = System.nanoTime()
 //        return if (tokenService.validateToken(hitRec.username, hitRec.token)) {
+            println("hi")
             val res = checker.checkHit(hitRec).toString()
             val checkedHitEntity = HitEntity().also {
                 it.cordX = hitRec.cordX
@@ -54,5 +55,11 @@ class ShootController {
 //                HitsForUserDto("error", "expired token", null)
 //            )
 //        }
+    }
+
+    @DeleteMapping
+    fun deleteUsers(@RequestBody hitRec: HitDto):ResponseEntity<Any>{
+        hitsRepository.deleteAllByName(hitRec.username)
+        return ResponseEntity.ok().body(AuthRespDto("nice"))
     }
 }

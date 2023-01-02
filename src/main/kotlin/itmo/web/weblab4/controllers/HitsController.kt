@@ -36,11 +36,10 @@ class HitsController {
         )
     }
     @DeleteMapping
-    @Transactional
     fun deleteHitsByUser(@Validated @RequestBody emptyHit: HitDto): ResponseEntity<Any> {
 //        if (tokenService.validateToken(emptyHit.username, emptyHit.token)) {
-            hitsRepository.deleteAllByName(emptyHit.username)
-            val hits = hitsRepository.findAllByName(emptyHit.username)
+            hitsRepository.deleteAllByName(emptyHit.username!!)
+            val hits = hitsRepository.findAllByName(emptyHit.username!!)
             return ResponseEntity.ok().body(
                 HitsForUserDto("ok", null, hits!!.map {
                     UsersHitsDto(
