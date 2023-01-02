@@ -5,5 +5,5 @@ import itmo.web.weblab4.entity.HitEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserRepo: JpaRepository<User, Long> {
-    fun findAllByUserName(userName: String): User
+    fun findByUserName(userName: String): User
 }
