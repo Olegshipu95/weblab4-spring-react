@@ -6,16 +6,35 @@ import itmo.web.weblab4.repo.RoleRepo
 import itmo.web.weblab4.repo.UserRepo
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
 @Transactional
-class UserServiceImp:UserService {
+class UserServiceImp:UserService,UserDetailsService {
     @Autowired
     private lateinit var userRepo: UserRepo
     @Autowired
     private lateinit var roleRepo: RoleRepo
 
+
+    override fun loadUserByUsername(username: String): UserDetails {
+        val user = userRepo.findByUserName(username)
+        if(user == null){
+            println("User not found in the database")
+            throw UsernameNotFoundException("User not found in the database")
+        }else{
+            println("User fount in the db - $username")
+        }
+        val authorizaties= mutableListOf<SimpleGrantedAuthority>()
+        user.roles.forEach{role->
+            authorizaties.add(SimpleGrantedAuthority(role.roleName))
+        }
+        return org.springframework.security.core.userdetails.User(user.userName,user.password,authorizaties)
+    }
 
     override fun saveUser(user: User): User {
         println("Save user - $user to db")
@@ -29,12 +48,14 @@ class UserServiceImp:UserService {
 
     override fun addRoleToUser(userName: String, roleName: String) {
         println("add role - $roleName to userName - $userName")
-        val user:User = userRepo.findByUserName(userName)
-        val role:Role = roleRepo.findByRoleName(roleName)
+        val user: User = userRepo.findByUserName(userName)
+            ?: throw UsernameNotFoundException("User not found in the database")
+        val role: Role = roleRepo.findByRoleName(roleName)
+            ?: throw UsernameNotFoundException("Role not found in the database")
         user.roles.add(role)
     }
 
-    override fun getUser(username: String):User {
+    override fun getUser(username: String):User?{
         println("get user $username")
         return userRepo.findByUserName(username)
     }
@@ -43,4 +64,6 @@ class UserServiceImp:UserService {
         println("get all users")
         return userRepo.findAll()
     }
+
+
 }
