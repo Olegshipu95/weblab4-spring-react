@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Table} from "react-bootstrap";
 
 function tableFromArray(hits) {
-    console.log("Аргументы -" + hits)
+    console.log("Аргументы -" + typeof hits)
+    console.log(typeof hits)
     if (hits === undefined) return (<tr></tr>)
     return (
         Array.from(hits).map((hit, index) =>

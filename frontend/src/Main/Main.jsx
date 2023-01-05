@@ -43,36 +43,54 @@ export function Main() {
             "method": "POST",
             "headers": myHeaders,
             "body": JSON.stringify(data)
-        }).then(resp => {
-            let response = resp.json()
-            resp.then(res => {
-                if (resp.status >= 200 && resp.status < 300) {
-                    console.log("resp hits" - resp.hits)
-                    setMyHits(resp)
-                    console.log("my hits" - myHits)
-                    return true
-                }
-                else if(resp.status === 500){
-                    alert("сервер недоступен")
-                }
-                else alert(resp)
-            })
+        }).then(response => response.json()).then(data => {
+            console.log(data.hits)
+            setMyHits(data.hits)
+            console.log(myHits)
         }).catch(error => {
             alert(error)
         })
     }
 
     function getHits() {
-        getHitsFromServer(login, tokenn, (result) => {
-            setMyHits(result.hits)
-        }, (result) => {
-            // navigate("/")
+        let myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json')
+        console.log("начинается запрос")
+        let accessToken = localStorage.getItem("accessToken"); // объявляем локальную переменную tokenData
+        let refreshToken = localStorage.getItem("refreshToken")
+        let expirationTime = localStorage.getItem("expirationTime")
+        console.log("access token - " + accessToken)
+        console.log("refreshToken - " + refreshToken)
+        if (Date.now() >= expirationTime * 1000) {
+            myHeaders.append('RefreshToken', `Bearer ${refreshToken}`)
+        } else {
+            myHeaders.append('AccessToken', `Bearer ${accessToken}`)
+        }
+        fetch("http://localhost:8080/api/hits/list", {
+            "method": "GET",
+            "headers": myHeaders,
+        }).then(response => response.json()).then(data => {
+            console.log(data.hits)
+            setMyHits(data.hits)
+            console.log(myHits)
+        }).catch(error => {
+            alert(error)
         })
     }
 
     function sendDelete() {
-        let data = {username: login}
-        superagent.delete('http://localhost:8080/hits/shoot').set("Content-Type", "application/json").then(resp => {
+        let myHeaders = new Headers();
+        let accessToken = localStorage.getItem("accessToken"); // объявляем локальную переменную tokenData
+        let refreshToken = localStorage.getItem("refreshToken")
+        let expirationTime = localStorage.getItem("expirationTime")
+        console.log("access token - " + accessToken)
+        console.log("refreshToken - " + refreshToken)
+        if (Date.now() >= expirationTime * 1000) {
+            myHeaders.append('RefreshToken', `Bearer ${refreshToken}`)
+        } else {
+            myHeaders.append('AccessToken', `Bearer ${accessToken}`)
+        }
+        fetch('http://localhost:8080/api/hits/list', {"method": "GET", "headers": myHeaders,}).then(resp => {
             setMyHits([])
             alert(resp)
         })

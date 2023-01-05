@@ -26,20 +26,13 @@ export function getHitsFromServer(login, onSuccess, OnError){
         fetch("http://localhost:8080/api/hits/list",{
         "method": "GET",
         "headers": myHeaders,
-    }).then(resp=>{
-        if(resp.status>=200 && resp.status<300){
-            resp.json().then(res=>{
-                console.log(res)
-                onSuccess(res)
-                })
-            onSuccess(resp)
+    }).then(response=>response.json()).then(data=>{
+            console.log(data.hits)
+            onSuccess(data.hits)
             return true
-        }
-        else if(resp.status === 500){
-            alert("сервер недоступен")
-        }
-        else alert(resp)
-    })
+        }).catch(error => {
+            alert(error)
+        })
     return false
 }
 
