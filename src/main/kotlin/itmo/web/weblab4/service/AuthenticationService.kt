@@ -32,9 +32,7 @@ class AuthenticationService {
         val existsUser = userRepo.existsByUserName(request.username)
         if(existsUser){
             println("$request.username are using in system")
-            return ResponseEntity.badRequest().body(
-                "$request.username are using in system"
-            )
+            return ResponseEntity.status(403).build()
         }
         user.role = Role.USER
         try {
@@ -45,9 +43,10 @@ class AuthenticationService {
                 "BD in not available"
             )
         }
-        val expirationTime:Long = jwtService.makeExpirationTime()
-        val jwtToken = jwtService.generateToken(user, expirationTime)
-        return ResponseEntity.ok(AuthenticationResponse(jwtToken, expirationTime))
+        val accessExpirationTime:Long = jwtService.makeAccessJWTExpirationTime()
+        val jwtAccessToken = jwtService.generateAccessToken(user, accessExpirationTime)
+        val jwtRefreshToken = jwtService.generateRefreshToken(user, jwtService.makeRefreshJWTExpirationTime())
+        return ResponseEntity.ok(AuthenticationResponse(jwtAccessToken, accessExpirationTime,jwtRefreshToken ))
     }
     fun authenticate(request: AuthenticationRequest): ResponseEntity<Any>{
 
@@ -56,8 +55,9 @@ class AuthenticationService {
         val user = userRepo.findByUserName(request.username).get()
 
         println("Start generating token for ${request.username}")
-        val expirationTime:Long = jwtService.makeExpirationTime()
-        val jwtToken = jwtService.generateToken(user, expirationTime)
-        return ResponseEntity.ok(AuthenticationResponse(jwtToken, expirationTime))
+        val accessExpirationTime:Long = jwtService.makeAccessJWTExpirationTime()
+        val jwtAccessToken = jwtService.generateAccessToken(user, accessExpirationTime)
+        val jwtRefreshToken = jwtService.generateRefreshToken(user, jwtService.makeRefreshJWTExpirationTime())
+        return ResponseEntity.ok(AuthenticationResponse(jwtAccessToken, accessExpirationTime, jwtRefreshToken))
     }
 }

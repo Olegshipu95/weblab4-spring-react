@@ -25,16 +25,22 @@ class JwtAuthFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val authHeader: String? = request.getHeader("access_token")
+        println("start filter")
+        val authHeader: String? = request.getHeader("accesstoken")
         val jwt: String
         val userName: String
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response)
             return
         }
+        println(authHeader)
         jwt = authHeader.substring(7)
+        println(jwt)
         userName = jwtService.extractUsername(jwt)
-        if (!userName.isNullOrBlank() && SecurityContextHolder.getContext().authentication == null) {
+        println("username - $userName")
+        println("start checking the jwt")
+        if (!userName.isNullOrBlank() && jwtService.validateToken(jwt)) {
+            println("validate is ok")
             val userDetails: UserDetails = this.userDetailsService.loadUserByUsername(userName)
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 val authToken: UsernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(

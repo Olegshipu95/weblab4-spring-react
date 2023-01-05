@@ -1,20 +1,45 @@
 const superagent = require('superagent');
 
 
-export function getHitsFromServer(login,token, onSuccess){
-    let data = {
-        username: login, token: token
-    }
+export function getHitsFromServer(login, onSuccess, OnError){
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type','application/json')
     console.log("начинается запрос")
-    superagent.post("http://localhost:8080/hits/list").send(data).set("Content-Type", "application/json").then(res => {
-        console.log(res)
-        onSuccess(res)
-        return true
+    let accessToken = localStorage.getItem("accessToken"); // объявляем локальную переменную tokenData
+    let refreshToken = localStorage.getItem("refreshToken")
+    let expirationTime = localStorage.getItem("expirationTime")
+    console.log("access token - "+ accessToken)
+    console.log("refreshToken - "+refreshToken)
+    // if (!accessToken || !refreshToken) {
+    //     localStorage.removeItem("refreshToken")
+    //     localStorage.removeItem("accessToken")
+    //     localStorage.removeItem("login")
+    //     OnError()
+    // }
+
+    if (Date.now() >=  expirationTime * 1000){
+        myHeaders.append('RefreshToken', `Bearer ${refreshToken}`)
+    }
+    else{
+        myHeaders.append('AccessToken', `Bearer ${accessToken}`)
+    }
+        fetch("http://localhost:8080/api/hits/list",{
+        "method": "GET",
+        "headers": myHeaders,
+    }).then(resp=>{
+        if(resp.status>=200 && resp.status<300){
+            resp.json().then(res=>{
+                console.log(res)
+                onSuccess(res)
+                })
+            onSuccess(resp)
+            return true
+        }
+        else if(resp.status === 500){
+            alert("сервер недоступен")
+        }
+        else alert(resp)
     })
-        .catch((error) => {
-            console.log(error)
-            alert("Проблемка с серваком")
-        })
     return false
 }
 
@@ -27,3 +52,4 @@ export function validateY(y){
 export function validateR(r){
     return !(r === undefined||r==null)
 }
+

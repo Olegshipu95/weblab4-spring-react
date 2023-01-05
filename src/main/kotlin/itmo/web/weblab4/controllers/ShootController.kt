@@ -21,13 +21,9 @@ class ShootController {
     @Autowired
     private lateinit var checker: Checker
 
-//    @Autowired
-//    private lateinit var tokenService: JwtService
-
     @PostMapping
     fun hitsFromUser(@RequestBody hitRec: HitDto): ResponseEntity<Any> {
         val start = System.nanoTime()
-//        return if (tokenService.validateToken(hitRec.username, hitRec.token)) {
             println("hi")
             val res = checker.checkHit(hitRec).toString()
             val checkedHitEntity = HitEntity().also {
@@ -38,6 +34,7 @@ class ShootController {
                 it.result = res
                 it.execution = (System.nanoTime() - start) / 1000
             }
+
             hitsRepository.save(checkedHitEntity)
             val hits = hitsRepository.findAllByName(hitRec.username)
             return ResponseEntity.ok().body(

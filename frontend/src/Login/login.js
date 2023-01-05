@@ -1,23 +1,10 @@
 import {json} from "react-router-dom";
 import axios from "axios";
-const superagent = require('superagent');
 
 
 export function sendRegisterInfo(username, password, setErrorMessage, onSuccess) {
     let data = {username: username, password: password}
-    // superagent.post("http://localhost:8080/api/auth/register").send(data).set("Content-Type", "application/json").then(res => {
-    //     console.log(res)
-    //     localStorage.setItem("token", res.token)
-    //     console.log(localStorage.getItem("token"))
-    //     console.log("время сейчас" + Date.now())
-    //     console.log("время работы" + res.expirationTime * 1000)
-    //     localStorage.setItem("login", username)
-    //     onSuccess(res)
-    //     return true
-    // })
-    //     .catch((error) => {
-    //         alert(error)
-    //     })
+
 
     fetch("http://localhost:8080/api/auth/register",{
         "method": "POST",
@@ -29,7 +16,8 @@ export function sendRegisterInfo(username, password, setErrorMessage, onSuccess)
         if(resp.status>=200 && resp.status<300){
             resp.json().then(res=>{
                 console.log(res)
-                localStorage.setItem("token", res.token)
+                localStorage.setItem("accessToken", res.jwtAccessToken)
+                localStorage.setItem("refreshToken", res.jwtRefreshToken)
                 localStorage.setItem("expirationTime",res.expirationTime)
                 console.log(localStorage.getItem("token"))
                 console.log("время сейчас" + Date.now())
@@ -75,12 +63,12 @@ export function sendLoginInfo(username, password, setErrorMessage, onSuccess) {
         if(resp.status>=200 && resp.status<300){
             resp.json().then(res=>{
                 console.log(res)
-                localStorage.setItem("token", res.token)
+                localStorage.setItem("accessToken", res.jwtAccessToken)
+                localStorage.setItem("refreshToken", res.jwtRefreshToken)
+                console.log(localStorage.getItem("accessToken"))
+                console.log(localStorage.getItem("refreshToken"))
                 localStorage.setItem("expirationTime",res.expirationTime)
-                console.log(localStorage.getItem("token"))
-                console.log("время сейчас" + Date.now())
-                console.log("время работы" + res.expirationTime * 1000)
-                localStorage.setItem("login", username)})
+                localStorage.setItem("login", username)}).catch(err=>alert(err))
             onSuccess(resp)
             return true
         }
@@ -91,3 +79,4 @@ export function sendLoginInfo(username, password, setErrorMessage, onSuccess) {
     })
     return false
 }
+

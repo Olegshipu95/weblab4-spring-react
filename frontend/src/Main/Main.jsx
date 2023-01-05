@@ -3,6 +3,7 @@ import {Button, Col, Container, Form, Row, Table} from "react-bootstrap";
 import {getHitsFromServer, validateR, validateX, validateY} from "./io";
 import MyTable from "./MyTable";
 import {useNavigate} from "react-router-dom";
+
 const superagent = require('superagent');
 
 export function Main() {
@@ -13,45 +14,68 @@ export function Main() {
     const [currY, setY] = useState(1)
     const [currR, setR] = useState(0.5)
     const navigate = useNavigate()
-    useEffect(() => {
-        if (localStorage.getItem("login") == null) {
-            navigate("/")
-        }
-    })
-    function sendPoint(){
-        if(!validateX(currX)){
+    let accessToken = localStorage.getItem("accessToken"); // объявляем локальную переменную tokenData
+    let refreshToken = localStorage.getItem("refreshToken")
+    let expirationTime = localStorage.getItem("expirationTime")
+    // useEffect(() => {
+    //     if (localStorage.getItem("refreshToken") == null || localStorage.getItem("refreshToken")=== undefined) {
+    //         navigate("/")
+    //     }
+    // })
+    function sendPoint() {
+        if (!validateX(currX)) {
             alert("You should write the x coord")
             return
         }
-        if(!validateY(currY)){
+        if (!validateY(currY)) {
             alert("You should write the y coord")
             return
         }
-        if(!validateR(currR)){
+        if (!validateR(currR)) {
             alert("You should write the r coord")
             return
         }
-        let data = {cordX: currX, cordY: currY, cordR: currR, username: login, token: null}
-        superagent.post('http://localhost:8080/hits/shoot').send(data).set("Content-Type", "application/json")
-            .then(resp => {
-                setMyHits(resp.hits)
+        let myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json')
+        myHeaders.append('AccessToken', `Bearer ${accessToken}`)
+        let data = {username: login, cordX: currX, cordY: currY, cordR: currR}
+        fetch("http://localhost:8080/api/hits/shoot", {
+            "method": "POST",
+            "headers": myHeaders,
+            "body": JSON.stringify(data)
+        }).then(resp => {
+            let response = resp.json()
+            resp.then(res => {
+                if (resp.status >= 200 && resp.status < 300) {
+                    console.log("resp hits" - resp.hits)
+                    setMyHits(resp)
+                    console.log("my hits" - myHits)
+                    return true
+                }
+                else if(resp.status === 500){
+                    alert("сервер недоступен")
+                }
+                else alert(resp)
             })
-            .catch(error => {
-                alert(error)
-            })
+        }).catch(error => {
+            alert(error)
+        })
     }
 
     function getHits() {
         getHitsFromServer(login, tokenn, (result) => {
             setMyHits(result.hits)
+        }, (result) => {
+            // navigate("/")
         })
     }
-    function sendDelete(){
+
+    function sendDelete() {
         let data = {username: login}
         superagent.delete('http://localhost:8080/hits/shoot').set("Content-Type", "application/json").then(resp => {
-                setMyHits([])
-                alert(resp)
-            })
+            setMyHits([])
+            alert(resp)
+        })
             .catch(error => {
                 alert(error)
             })

@@ -8,7 +8,7 @@ import io.jsonwebtoken.security.Keys
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.security.Key
-import java.util.Date
+import java.util.*
 import java.util.function.Function
 
 
@@ -17,7 +17,11 @@ class JwtService {
     private val SECRET_KEY ="357638792F423F4528482B4D6251655468566D597133743677397A2443264629"
 
     fun extractUsername(token:String):String{
-        return extractClaim(token, Claims::getSubject)
+        try {
+            return extractClaim(token, Claims::getSubject)
+        }catch (e:Exception){
+            return ""
+        }
     }
     fun extractAllClaims(token: String): Claims {
         return Jwts.parserBuilder().setSigningKey(getSignInKey())
@@ -25,9 +29,18 @@ class JwtService {
             .parseClaimsJws(token)
             .body
     }
+    fun validateToken(token: String?): Boolean {
+        return try {
+            Jwts.parserBuilder().setSigningKey(getSignInKey()).build()
+                .parseClaimsJws(token)
+            true
+        } catch (e: java.lang.Exception) {
+            false
+        }
+    }
 
-    fun generateToken(userDetails: UserDetails, expirationTime:Long):String{
-        return generateToken(mutableMapOf(),userDetails, expirationTime)
+    fun generateAccessToken(userDetails: UserDetails, expirationTime:Long):String{
+        return generateAccessToken(mutableMapOf(),userDetails, expirationTime)
     }
 
     fun isTokenValid(token: String,userDetails: UserDetails):Boolean{
@@ -43,17 +56,21 @@ class JwtService {
         return extractClaim(token,Claims::getExpiration)
     }
 
-     fun makeExpirationTime():Long{
-        return System.currentTimeMillis()+1000
+     fun makeAccessJWTExpirationTime():Long{
+        return System.currentTimeMillis()+1000*24*30
     }
 
-    fun generateToken(extraClaims: Map<String, Any>, userDetails: UserDetails,expirationTime:Long):String{
+    fun makeRefreshJWTExpirationTime():Long{
+        return System.currentTimeMillis()+1000*30*10
+    }
+
+    fun generateAccessToken(extraClaims: Map<String, Any>, userDetails: UserDetails,expirationTime:Long):String{
         return Jwts
             .builder()
             .setClaims(extraClaims)
             .setSubject(userDetails.username)
             .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(expirationTime))//24 hours
+            .setExpiration(Date(expirationTime))
             .signWith(getSignInKey(),SignatureAlgorithm.HS256)
             .compact()
     }
@@ -64,7 +81,24 @@ class JwtService {
     }
 
     fun <T> extractClaim(token: String, claimsResolver:Function<Claims,T>): T{
+        println("extract Claim")
         val claims = extractAllClaims(token)
+        println("all claims are extacted")
         return claimsResolver.apply(claims)
+    }
+
+    fun generateRefreshToken(userDetails: UserDetails, expirationTime:Long):String{
+        return generateRefreshToken(mutableMapOf(),userDetails, expirationTime)
+    }
+
+    fun generateRefreshToken(extraClaims: Map<String, Any>, userDetails: UserDetails,expirationTime:Long):String{
+        return Jwts
+            .builder()
+            .setClaims(extraClaims)
+            .setSubject(userDetails.username)
+            .setIssuedAt(Date(System.currentTimeMillis()))
+            .setExpiration(Date(expirationTime))//24 hours
+            .signWith(getSignInKey(),SignatureAlgorithm.HS256)
+            .compact()
     }
 }

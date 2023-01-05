@@ -30,7 +30,8 @@ export default function NaviBar() {
         })
     }
     const deleteAuth = async () => {
-        localStorage.removeItem("token")
+        localStorage.removeItem("refreshToken")
+        localStorage.removeItem("accessToken")
         localStorage.removeItem("login")
         window.location.href = "/"
     }

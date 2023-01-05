@@ -39,6 +39,7 @@ class SecurityConfig {
             .requestMatchers("/public/**").permitAll()
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/api/**").authenticated()
+            .requestMatchers("/api/hits/**").authenticated()
             .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
             .anyRequest().permitAll()
             .and()
