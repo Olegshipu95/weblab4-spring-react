@@ -42,8 +42,6 @@ export function Login() {
             return
         }
         sendRegisterInfo(username, password, setMessage, (result) => {
-            // localStorage.setItem("token", result.token)
-            localStorage.setItem("login", username)
             navigate("/main")
         })
     }

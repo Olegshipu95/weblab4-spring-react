@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 const superagent = require('superagent');
 
 export function Main() {
-    const login = localStorage.getItem("lo gin")
+    const login = localStorage.getItem("login")
     const tokenn = localStorage.getItem("token")
     const [myHits, setMyHits] = useState([])
     const [currX, setX] = useState(2)
@@ -34,7 +34,6 @@ export function Main() {
         let data = {cordX: currX, cordY: currY, cordR: currR, username: login, token: null}
         superagent.post('http://localhost:8080/hits/shoot').send(data).set("Content-Type", "application/json")
             .then(resp => {
-                resp.json
                 setMyHits(resp.hits)
             })
             .catch(error => {

@@ -5,6 +5,7 @@ import {sendLoginInfo, validateEmail, validatePass} from "../Login/login";
 import "../Login/login"
 export default function NaviBar() {
     const login = localStorage.getItem("login")
+    const tokenn = localStorage.getItem("token")
     const [show, setShow] = useState(false)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
